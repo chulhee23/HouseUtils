@@ -11,6 +11,6 @@ class ApartmentService(
 ) {
 
     fun getPriceById(id: Long) : Long {
-        return repository.findByIdOrNull(id)?.price ?: throw NotFoundException()
+        return repository.getById(id).price
     }
 }
