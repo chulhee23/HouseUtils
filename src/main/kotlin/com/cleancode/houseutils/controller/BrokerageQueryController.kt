@@ -3,17 +3,19 @@ package com.cleancode.houseutils.controller
 import com.cleancode.houseutils.constants.ActionType
 import com.cleancode.houseutils.policy.BrokeragePolicy
 import com.cleancode.houseutils.policy.BrokeragePolicyFactory
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import com.cleancode.houseutils.service.ApartmentService
+import org.springframework.web.bind.annotation.*
 
 /**
- * 중개수수료 질의 컨트롤러
+ * 중개수수료가 얼마인지 질의하는 컨트롤러
+ *
+ * @author chulhee.lee
  */
 @RestController
 @RequestMapping("/api")
-class BrokerageQueryController {
+class BrokerageQueryController(
+    private val apartmentService: ApartmentService
+) {
 
     @GetMapping("/calc/brokerage")
     fun calculateBrokerage(
@@ -21,5 +23,14 @@ class BrokerageQueryController {
         @RequestParam price: Long,
     ): Long {
         return BrokeragePolicyFactory.of(actionType).calculate(price)
+    }
+
+    @GetMapping("/calc/brokerage/apartment/{id}")
+    fun calcBrokerageByApartmentId(
+        @PathVariable id: Long,
+        @RequestParam actionType: ActionType
+    ) : Long {
+
+        return BrokeragePolicyFactory.of(actionType).calculate(apartmentService.getPriceById(id))
     }
 }
